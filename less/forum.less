@@ -1,0 +1,150 @@
+// ── PoW CAPTCHA widget styles ────────────────────────────────────────────────
+
+.PowCaptchaWidget {
+    // Fixed height keeps the modal from resizing between states.
+    min-height: 32px;
+    margin: 8px 0 4px;
+    font-size: 13px;
+    line-height: 1.4;
+
+    // ── Honeypot ───────────────────────────────────────────────────────
+    // Off-screen rather than display:none so naive form-filling bots still see it.
+    // Real users never reach it: aria-hidden + inert + tabindex=-1 on the markup.
+    &-hp {
+        position: absolute !important;
+        left: -9999px !important;
+        top: auto !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    &-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 32px;
+        color: var(--muted-color, #888);
+    }
+
+    &-label {
+        flex: 0 1 auto;
+    }
+
+    .LoadingIndicator-container,
+    .LoadingIndicator {
+        flex-shrink: 0;
+    }
+
+    &--solved &-status {
+        color: var(--success-color, #22c55e);
+    }
+
+    &--error &-status {
+        color: var(--error-color, #ef4444);
+    }
+
+    // Never rely on colour alone, and keep the retry control easy to hit.
+    .Button--link {
+        padding: 0 4px;
+        height: auto;
+        min-height: 24px;
+        font-size: inherit;
+        text-decoration: underline;
+        color: inherit;
+    }
+
+    // ── Privacy notice ─────────────────────────────────────────────────
+    // A button (works with touch, keyboard and screen readers) that opens a small
+    // popover ABOVE itself, so it never resizes or gets clipped by the modal.
+    &-privacy {
+        // Full-width block: the popover is anchored to it (left/right: 0), so it can
+        // never stick out of the modal whatever the alignment of the link is.
+        position: relative;
+        display: block;
+        font-size: 12px;
+        text-align: left;
+
+        &--center {
+            text-align: center;
+        }
+
+        &--right {
+            text-align: right;
+        }
+    }
+
+    &-privacyToggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-height: 24px;
+        padding: 0 2px;
+        border: 0;
+        background: none;
+        color: var(--muted-color, #888);
+        font: inherit;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--text-color, inherit);
+        }
+    }
+
+    &-privacyTip {
+        position: absolute;
+        z-index: 10;
+        bottom: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
+        max-height: 16rem;
+        overflow-y: auto;
+        padding: 10px 12px;
+        border: 1px solid var(--control-bg, #ccc);
+        border-radius: var(--border-radius, 4px);
+        background: var(--body-bg, #fff);
+        color: var(--text-color, #222);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+        font-size: 12px;
+        line-height: 1.45;
+        // Flarum modals are centered: the explanation must read as normal left-aligned text.
+        text-align: left;
+
+        p {
+            margin: 0 0 6px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        a {
+            color: var(--link-color, var(--primary-color, #2563eb));
+            text-decoration: underline;
+        }
+    }
+
+    // Respect users who ask for less motion.
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation: none !important;
+            transition: none !important;
+        }
+    }
+}
+
+// ── Dark mode support ─────────────────────────────────────────────────────────
+// Flarum sets data-theme="dark" (or a variant) on <html>.
+[data-theme^="dark"] {
+    .PowCaptchaWidget--solved .PowCaptchaWidget-status {
+        color: var(--success-color, #4ade80);
+    }
+    .PowCaptchaWidget--error .PowCaptchaWidget-status {
+        color: var(--error-color, #f87171);
+    }
+}
